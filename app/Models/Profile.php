@@ -2,35 +2,32 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
-
-class User extends Authenticatable
+class Profile extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    //
     use HasFactory, Notifiable, HasUuids;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-
-    protected $primaryKey = 'user_id';
+    protected $primaryKey = 'profile_id';
 
     public const CREATED_AT = 'created_at';
 
     public const UPDATED_AT = 'updated_at';
 
     protected $fillable = [
+        'profile_id',
+        'bio',
+        'name',
         'user_id',
-        'username',
-        'email',
-        'password',
+        'avatar_url',
+        'banner_url',
+        'instagram_profile_url',
+        'behance_profile_url',
+        'category',
         'created_at',
         'updated_at',
     ];
@@ -41,7 +38,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'password',
+        'user_id',
     ];
 
     /**
@@ -54,7 +51,6 @@ class User extends Authenticatable
         return [
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
-            'password' => 'hashed',
         ];
     }
     public $incrementing = false;
@@ -63,8 +59,7 @@ class User extends Authenticatable
     {
         parent::boot();
         static::creating(function ($model) {
-            $model->user_id = (string) Str::uuid();
+            $model->profile_id = (string) Str::uuid();
         });
     }
-
 }
