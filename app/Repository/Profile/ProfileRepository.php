@@ -9,23 +9,38 @@ use App\Models\Profile;
 class ProfileRepository implements ProfileActionsInterface
 {
 
-    public function createProfile(Profile $profile)
+    public function createProfile(array $data)
     {
-        // TODO: Implement createProfile() method.
+        try {
+            $profile = Profile::create($data);
+            return $profile->profile_id;
+        } catch (\Exception $e) {
+            throw new \Exception('Error in profile creation, try again later... '.$e);
+        }
     }
 
-    public function deleteProfileById(string $profile_id)
+    public function deleteProfileById(Profile $profile)
     {
-        // TODO: Implement deleteProfileById() method.
+        return $profile->deleteOrFail();
     }
 
     public function getProfileById(string $profile_id)
     {
-        // TODO: Implement getProfileById() method.
+        return Profile::findOrFail($profile_id);
     }
 
-    public function updateProfile(UpdateProfileDTO $data)
+    public function updateProfile(Profile $profile, array $data)
     {
-        // TODO: Implement updateProfile() method.
+        try {
+            $profile->update($data);
+            return $profile->profile_id;
+        } catch (Exception $e) {
+            throw new \Exception('Error in profile data update, try again later... '.$e);
+        }
+    }
+
+    public function getProfileByUserId(string $user_id)
+    {
+        return Profile::where('user_id', $user_id)->first();
     }
 }

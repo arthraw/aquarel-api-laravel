@@ -2,24 +2,54 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\DTOs\User\UserAuthDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginUserRequest;
+use App\Repository\Profile\ProfileRepository;
 use App\Repository\User\UserRepository;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
     protected UserRepository $repository;
+    protected ProfileRepository $profile;
 
-    public function __construct(UserRepository $repository)
+    public function __construct(UserRepository $repository, ProfileRepository $profile)
     {
         $this->repository = $repository;
+        $this->profile = $profile;
     }
 
     public function login(LoginUserRequest $request)
     {
-        $userData = $request->validated();
+        try{
+            $userData = UserAuthDTO::fromLoginRequest($request->validated());
+            $email = $userData->email;
+            $user = $this->repository->getUserByEmail($email);
+            if (is_null($user)) {
+                return response()->json([
+                    'message' => 'Nenhum usuário encontrado com o email passado.'
+                ], 404);
+            }
+            if (Hash::check($userData->password, $user->password)) {
+                $profile = $this->profile->getProfileByUserId($user->user_id);
+                return response()->json([
+                    'token' => 'teste', // alterar pra gerar token
+                    'profile_id' => $profile->profile_id,
+                ], 200);
 
+            } else {
+                return response()->json([
+                    'message' => 'Falha ao tentar realizar a autenticação com as credenciais passadas.',
+                ], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
+
 }
 
 
