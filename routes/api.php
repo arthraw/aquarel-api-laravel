@@ -10,9 +10,9 @@ Route::get('/', function () {
 });
 
 Route::prefix('/users')->middleware('api')->group(function () {
-    Route::post('/register', [UserController::class, 'addUser']);
-    Route::post('/login', [AuthController::class, 'login']);
-});
+    Route::post('/register', [UserController::class, 'addUser'])->name('users.register');
+    Route::post('/login', [AuthController::class, 'login'])->name('users.login');
+})->name('users');
 
 
 
