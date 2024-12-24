@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\User;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CreateUserRequest extends FormRequest
 {
@@ -36,5 +38,15 @@ class CreateUserRequest extends FormRequest
             'password.required' => 'A senha é obrigatória.',
             'password.min' => 'A senha deve ter pelo menos 6 caracteres.',
         ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        $response = response()->json([
+            'validation_message' => 'Erro de validação nos dados enviados.',
+            'errors' => $validator->errors(),
+        ], 400);
+
+        throw new HttpResponseException($response);
     }
 }
