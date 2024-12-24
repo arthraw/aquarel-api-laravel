@@ -3,7 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -12,7 +15,7 @@ use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasUuids;
 
     /**
@@ -68,4 +71,22 @@ class User extends Authenticatable
         });
     }
 
+    protected static function newFactory(): Factory|UserFactory
+    {
+        return UserFactory::new();
+    }
+
+    public function getUserAttributes()
+    {
+        return [
+            'username' => $this->username,
+            'password' => $this->password,
+            'email' => $this->email
+        ];
+    }
+
+    public function profile(): HasOne
+    {
+        return $this->hasOne(Profile::class, 'user_id', 'user_id');
+    }
 }
