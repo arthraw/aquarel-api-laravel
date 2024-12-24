@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\DTOs\User\UserAuthDTO;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\LoginUserRequest;
+use App\Http\Requests\User\LoginUserRequest;
 use App\Repository\Profile\ProfileRepository;
 use App\Repository\User\UserRepository;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -44,6 +45,7 @@ class AuthController extends Controller
                 ], 404);
             }
         } catch (\Exception $e) {
+            Log::critical($e->getMessage());
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);
