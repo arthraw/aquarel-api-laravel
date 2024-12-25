@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Profile;
 
+use App\DTOs\Profile\GetProfileDTO;
 use App\DTOs\Profile\UpdateProfileDTO;
 use App\Exceptions\Profile\ProfileException;
 use App\Exceptions\User\UserException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Requests\Profile\GetProfileRequest;
+use App\Http\Requests\Profile\UpdateProfileRequest;
 use App\Models\User;
 use App\Repository\Profile\ProfileRepository;
 use App\Repository\User\UserRepository;
 use Illuminate\Support\Facades\Hash;
-use Mockery\Exception;
 
 class ProfileController extends Controller
 {
@@ -26,7 +27,7 @@ class ProfileController extends Controller
         $this->user = $user;
     }
 
-    public function updateUserProfile(UpdateUserRequest $request)
+    public function updateUserProfile(UpdateProfileRequest $request)
     {
         $profileRequest = UpdateProfileDTO::fromUpdateRequest($request->validated());
         $profile = $this->profile->getProfileById($profileRequest->profile_id);
@@ -96,11 +97,22 @@ class ProfileController extends Controller
             } catch (\Exception $e) {
                 throw new UserException('password_check not provided');
             }
-
         }
-
         $this->user->updateUser($user, $filteredAttributes);
+    }
 
+    public function getProfileData(GetProfileRequest $request)
+    {
+        $profileRequest = GetProfileDTO::fromGetProfileRequest($request->validated());
+        $profile = $this->profile->getProfileById($profileRequest->profile_id);
+        if (is_null($profile)) {
+            return response()->json([
+                'message' => 'The profile_id provided not exists'
+            ], 404);
+        }
+        return response()->json([
+            'profile' => $profile
+        ],200);
     }
 
 }

@@ -16,6 +16,7 @@ Route::prefix('/users')->middleware('api')->group(function () {
 })->name('users');
 
 Route::prefix('/profiles')->middleware('api')->group(function () {
+    Route::post('/my', [ProfileController::class, 'getProfileData'])->name('profile.my');
     Route::patch('/update', [ProfileController::class, 'updateUserProfile'])->name('profile.update');
 })->name('profiles');
 
