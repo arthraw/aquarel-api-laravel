@@ -4,6 +4,7 @@ namespace App\Repository\User;
 
 use App\Interfaces\User\UserActionsInterface;
 use App\Models\User;
+use Exception;
 
 class UserRepository implements UserActionsInterface
 {
@@ -18,8 +19,8 @@ class UserRepository implements UserActionsInterface
         try {
             $user = User::create($data);
             return $user->user_id;
-        } catch (\Exception $e) {
-            throw new \Exception('Error in user creation, try again later... '.$e);
+        } catch (Exception $e) {
+            throw new Exception('Error in user creation, try again later... '.$e);
         }
 
     }
@@ -33,9 +34,9 @@ class UserRepository implements UserActionsInterface
     {
         try {
             $user->update($data);
-            return $user->user_id;
+            return $user;
         } catch (Exception $e) {
-            throw new \Exception('Error in user data update, try again later... '.$e);
+            throw new Exception('Error in user data update, try again later... '.$e);
         }
     }
 

@@ -3,6 +3,7 @@
 namespace App\Repository\Profile;
 
 use App\DTOs\Profile\UpdateProfileDTO;
+use App\Exceptions\Profile\ProfileException;
 use App\Interfaces\Profile\ProfileActionsInterface;
 use App\Models\Profile;
 
@@ -14,8 +15,8 @@ class ProfileRepository implements ProfileActionsInterface
         try {
             $profile = Profile::create($data);
             return $profile->profile_id;
-        } catch (\Exception $e) {
-            throw new \Exception('Error in profile creation, try again later... '.$e);
+        } catch (ProfileException $e) {
+            throw new ProfileException('Error in profile creation, try again later... '.$e);
         }
     }
 
@@ -26,16 +27,16 @@ class ProfileRepository implements ProfileActionsInterface
 
     public function getProfileById(string $profile_id)
     {
-        return Profile::findOrFail($profile_id);
+        return Profile::find($profile_id);
     }
 
     public function updateProfile(Profile $profile, array $data)
     {
         try {
             $profile->update($data);
-            return $profile->profile_id;
-        } catch (Exception $e) {
-            throw new \Exception('Error in profile data update, try again later... '.$e);
+            return $profile;
+        } catch (ProfileException $e) {
+            throw new ProfileException('Error in profile data update, try again later... '.$e);
         }
     }
 

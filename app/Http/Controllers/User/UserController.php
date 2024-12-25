@@ -4,8 +4,9 @@ namespace App\Http\Controllers\User;
 
 use App\DTOs\Profile\ProfileDTO;
 use App\DTOs\User\UserDTO;
+use App\Exceptions\User\UserException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\User\CreateUserRequest;
 use App\Repository\Profile\ProfileRepository;
 use App\Repository\User\UserRepository;
 use Illuminate\Support\Facades\Hash;
@@ -25,11 +26,22 @@ class UserController extends Controller
     public function addUser(CreateUserRequest $request)
     {
         $userData = UserDTO::fromRequest($request->validated());
+        if (!array_key_exists('password', (array)$userData) | !array_key_exists('username', (array)$userData) | !array_key_exists('email', (array)$userData)) {
+            return response()->json([
+                'message' => UserException::missingUserData()->getMessage()
+            ], 400);
+        }
         $user = [
             'username' => $userData->username,
             'email' => $userData->email,
             'password' => $userData->password
         ];
+        $userExists = $this->userRepository->getUserByEmail($user['email']);
+        if (!is_null($userExists)) {
+            return response()->json([
+                'message' => UserException::userAlreadyExists()->getMessage()
+            ], 400);
+        }
         $user['password'] = Hash::make($user['password']);
         try {
             $user_id = $this->userRepository->createUser($user);
@@ -48,9 +60,9 @@ class UserController extends Controller
                 'message' => 'Usuário criado com sucesso.',
                 'profile_id' => $profile_id
             ], 201);
-        } catch (\Exception $e) {
+        } catch (UserException $e) {
             return response()->json([
-                'message' => 'Erro ao tentar criar o usuário, verifique os dados passados.'
+                'message' => $e->getMessage()
             ], 400);
         }
     }
