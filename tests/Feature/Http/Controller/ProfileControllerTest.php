@@ -81,4 +81,14 @@ class ProfileControllerTest extends TestCase
             ]);
     }
 
+    public function testGetProfileWithIdReturnSuccess()
+    {
+        $fakeProfile = [
+            'profile_id' => '34486aa4-55d2-4dbe-ab0d-0d2fffaf441a',
+        ];
+        $response = $this->postJson(route('profile.my'), $fakeProfile);
+        $response
+            ->assertStatus(200);
+    }
+
 }
