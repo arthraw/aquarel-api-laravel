@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -11,7 +11,7 @@ class LoginUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,6 @@ class LoginUserRequest extends FormRequest
         return [
             'email' => 'required|email',
             'password' => 'required|string|min:8',
-            'token' => 'required|string',
         ];
     }
 

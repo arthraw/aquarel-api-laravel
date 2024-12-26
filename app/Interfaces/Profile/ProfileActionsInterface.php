@@ -7,11 +7,13 @@ use App\Models\Profile;
 
 interface ProfileActionsInterface
 {
-    public function createProfile(Profile $profile);
+    public function createProfile(array $data);
 
-    public function deleteProfileById(string $profile_id);
+    public function getProfileByUserId(string $user_id);
+
+    public function deleteProfileById(Profile $profile);
 
     public function getProfileById(string $profile_id);
 
-    public function updateProfile(UpdateProfileDTO $data);
+    public function updateProfile(Profile $profile, array $data);
 }

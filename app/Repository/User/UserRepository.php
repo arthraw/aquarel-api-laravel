@@ -4,23 +4,24 @@ namespace App\Repository\User;
 
 use App\Interfaces\User\UserActionsInterface;
 use App\Models\User;
+use Exception;
 
 class UserRepository implements UserActionsInterface
 {
 
     public function getUserById(string $id)
     {
-        return Post::findOrFail($id);
+        return User::findOrFail($id);
     }
 
-    public function createUser(User $user)
+    public function createUser(array $data)
     {
         try {
-            $user->save();
-        } catch (\Exception $e) {
-            throw new \Exception('Error in user creation, try again later... '.$e);
+            $user = User::create($data);
+            return $user->user_id;
+        } catch (Exception $e) {
+            throw new Exception('Error in user creation, try again later... '.$e);
         }
-        return $user->post_id;
 
     }
 
@@ -29,13 +30,18 @@ class UserRepository implements UserActionsInterface
         return $user->deleteOrFail();
     }
 
-    public function updateUserName(User $user)
+    public function updateUser(User $user, array $data)
     {
         try {
-            $user->fill($user->toArray());
-            $user->save();
+            $user->update($data);
+            return $user;
         } catch (Exception $e) {
-            throw new \Exception('Error in user data update, try again later... '.$e);
+            throw new Exception('Error in user data update, try again later... '.$e);
         }
-        return $user->post_id;    }
+    }
+
+    public function getUserByEmail(string $email)
+    {
+        return User::where('email', $email)->first();
+    }
 }
