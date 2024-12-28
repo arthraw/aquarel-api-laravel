@@ -8,15 +8,22 @@ use Throwable;
 class Handler extends ExceptionHandler
 {
     /**
-     * A list of exception types that are not reported.
+     * A list of the exception types that are not reported.
+     *
+     * @var array<int, class-string<Throwable>>
      */
-    protected $dontReport = [];
+    protected $dontReport = [
+        //
+    ];
 
     /**
-     * A list of inputs that are never flashed to the session.
+     * A list of the inputs that are never flashed for validation exceptions.
+     *
+     * @var array<int, string>
      */
     protected $dontFlash = [
         'password',
+        'password_check',
     ];
 
     /**
@@ -32,13 +39,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        if ($request->expectsJson()) {
-            if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException ||
-                $exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-                return response()->json([
-                    'message' => 'Resource not found'
-                ], 404);
-            }
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+                'status' => 500
+            ], 500);
         }
 
         return parent::render($request, $exception);

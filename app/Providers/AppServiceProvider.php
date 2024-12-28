@@ -14,6 +14,11 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
+    public function isDeferred()
+    {
+        return true;
+    }
+
     /**
      * Bootstrap any application services.
      */
