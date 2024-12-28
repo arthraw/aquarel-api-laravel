@@ -1,7 +1,10 @@
 <?php
 
+use App\Exceptions\Handler;
+use Illuminate\Contracts\Debug\ExceptionHandler;
+
 return [
     App\Providers\AppServiceProvider::class,
-    \Illuminate\Contracts\Debug\ExceptionHandler::class,
-    \App\Exceptions\Handler::class,
+    ExceptionHandler::class,
+//    Handler::class,
 ];
