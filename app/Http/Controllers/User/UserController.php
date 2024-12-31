@@ -57,7 +57,7 @@ class UserController extends Controller
             $profile_id = $this->profile->createProfile($profile);
 
             return response()->json([
-                'message' => 'Usuário criado com sucesso.',
+                'message' => 'User updated successfully',
                 'profile_id' => $profile_id
             ], 201);
         } catch (UserException $e) {
