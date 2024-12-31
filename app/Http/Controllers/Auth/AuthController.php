@@ -29,7 +29,7 @@ class AuthController extends Controller
             $user = $this->repository->getUserByEmail($email);
             if (is_null($user)) {
                 return response()->json([
-                    'message' => 'Nenhum usuário encontrado com o email passado.'
+                    'message' => 'No users found with provided email'
                 ], 404);
             }
             if (Hash::check($userData->password, $user->password)) {
@@ -41,7 +41,7 @@ class AuthController extends Controller
 
             } else {
                 return response()->json([
-                    'message' => 'Falha ao tentar realizar a autenticação com as credenciais passadas.',
+                    'message' => 'Failed to auth user with provided credentials',
                 ], 404);
             }
         } catch (\Exception $e) {

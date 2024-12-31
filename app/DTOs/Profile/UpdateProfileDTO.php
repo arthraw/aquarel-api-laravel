@@ -26,14 +26,25 @@ class UpdateProfileDTO
 
     public ?string $category;
 
-    public function __construct($profile_id, $email, $password, $password_check, $bio, $name, $avatar_url, $banner_url, $behance_profile_url, $instagram_profile_url, $category)
-    {
+    public function __construct(
+        string $profile_id,
+        ?string $email = null,
+        ?string $password = null,
+        ?string $password_check = null,
+        ?string $bio = null,
+        ?string $name = null,
+        ?string $avatar_url = null,
+        ?string $banner_url = null,
+        ?string $instagram_profile_url = null,
+        ?string $behance_profile_url = null,
+        ?string $category = null
+    ) {
         $this->profile_id = $profile_id;
         $this->email = $email;
         $this->password = $password;
         $this->password_check = $password_check;
-        $this->name = $name;
         $this->bio = $bio;
+        $this->name = $name;
         $this->avatar_url = $avatar_url;
         $this->banner_url = $banner_url;
         $this->instagram_profile_url = $instagram_profile_url;

@@ -32,14 +32,14 @@ class UpdateProfileRequest extends FormRequest
             'banner_url' => 'string',
             'instagram_profile_url' => 'string',
             'behance_profile_url' => 'string',
-            'category' => 'string'
+            'category' => 'string',
         ];
     }
 
     public function messages()
     {
         return [
-            'profile_id.required' => 'O id do perfil é obrigatório.'
+            'profile_id.required' => 'Profile id is required'
         ];
     }
 }

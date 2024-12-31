@@ -29,7 +29,7 @@ class GetProfileRequest extends FormRequest
     public function messages()
     {
         return [
-            'profile_id.required' => 'O id do perfil é obrigatório.'
+            'profile_id.required' => 'Profile id is required'
         ];
     }
 }
