@@ -12,8 +12,10 @@ class ExampleTest extends TestCase
      */
     public function test_the_application_returns_a_successful_response(): void
     {
-        $response = $this->get('/');
-
+        $header = [
+            'token' => env('API_TOKEN')
+        ];
+        $response = $this->get('v1/', $header);
         $response->assertStatus(200);
     }
 }
