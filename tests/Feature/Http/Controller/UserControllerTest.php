@@ -14,15 +14,17 @@ class UserControllerTest extends TestCase
         $fakeUser = [
             'username' => 'Carlos Alberto',
             'password' => 'Teste1234',
-            'email' => 'carlos_alberto@gmail.com'
+            'email' => 'carlos_alberto@gmail.com',
         ];
-
+        $header = [
+            'token' => env('API_TOKEN')
+        ];
         $user = User::factory()->make($fakeUser);
-        $response = $this->postJson(route('users.register'), $user->getUserAttributes());
+        $response = $this->postJson(route('users.register'), $user->getUserAttributes(), $header);
         $response
             ->assertStatus(201)
             ->assertJson([
-                'message' => 'Usuário criado com sucesso.',
+                'message' => 'User updated successfully',
             ]);
     }
 
@@ -31,11 +33,13 @@ class UserControllerTest extends TestCase
         $fakeUser = [
             'username' => 'etevaldo',
             'email' => 'etevaldo@teste.com',
-            'password' => 'teste1234'
+            'password' => 'teste1234',
         ];
-
+        $header = [
+            'token' => env('API_TOKEN')
+        ];
         $user = User::factory()->make($fakeUser);
-        $response = $this->postJson(route('users.register'), $user->getUserAttributes());
+        $response = $this->postJson(route('users.register'), $user->getUserAttributes(), $header);
         $response
             ->assertStatus(400)
             ->assertJson([
@@ -47,9 +51,12 @@ class UserControllerTest extends TestCase
     {
         $userAttributes = [
             'username' => 'Carlos Alberto',
-            'email' => 'carlos_alberto@gmail.com'
+            'email' => 'carlos_alberto@gmail.com',
         ];
-        $response = $this->postJson(route('users.register'), $userAttributes);
+        $header = [
+            'token' => env('API_TOKEN')
+        ];
+        $response = $this->postJson(route('users.register'), $userAttributes, $header);
         $response
             ->assertStatus(400);
     }
@@ -58,10 +65,12 @@ class UserControllerTest extends TestCase
     {
         $fakeUser = [
             'email' => 'etevaldo@teste.com',
-            'password' => 'teste123'
+            'password' => 'teste123',
         ];
-
-        $response = $this->postJson(route('users.login'), $fakeUser);
+        $header = [
+            'token' => env('API_TOKEN')
+        ];
+        $response = $this->postJson(route('users.login'), $fakeUser, $header);
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -73,14 +82,16 @@ class UserControllerTest extends TestCase
     {
         $fakeUser = [
             'email' => 'bola_de_gude@gmail.com',
-            'password' => 'teste123'
+            'password' => 'teste123',
         ];
-
-        $response = $this->postJson(route('users.login'), $fakeUser);
+        $header = [
+            'token' => env('API_TOKEN')
+        ];
+        $response = $this->postJson(route('users.login'), $fakeUser, $header);
         $response
             ->assertStatus(404)
             ->assertJson([
-                'message' => 'Nenhum usuário encontrado com o email passado.',
+                'message' => 'No users found with provided email',
             ]);
     }
 
@@ -88,28 +99,32 @@ class UserControllerTest extends TestCase
     {
         $fakeUser = [
             'email' => 'etevaldo@teste.com',
-            'password' => 'senhaqualquer123'
+            'password' => 'senhaqualquer123',
         ];
-
-        $response = $this->postJson(route('users.login'), $fakeUser);
+        $header = [
+            'token' => env('API_TOKEN')
+        ];
+        $response = $this->postJson(route('users.login'), $fakeUser, $header);
         $response
             ->assertStatus(404)
             ->assertJson([
-                'message' => 'Falha ao tentar realizar a autenticação com as credenciais passadas.',
+                'message' => 'Failed to auth user with provided credentials',
             ]);
     }
 
     public function testLoginUserWithoutEmail()
     {
         $fakeUser = [
-            'password' => 'senhaqualquer123'
+            'password' => 'senhaqualquer123',
         ];
-
-        $response = $this->postJson(route('users.login'), $fakeUser);
+        $header = [
+            'token' => env('API_TOKEN')
+        ];
+        $response = $this->postJson(route('users.login'), $fakeUser, $header);
         $response
             ->assertStatus(422)
             ->assertJson([
-                'message' => 'O campo email é obrigatório.',
+                'message' => 'Email field is required',
             ]);
     }
 }
