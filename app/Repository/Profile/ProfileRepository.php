@@ -20,14 +20,18 @@ class ProfileRepository implements ProfileActionsInterface
         }
     }
 
-    public function deleteProfileById(Profile $profile)
+    public function deleteProfile(Profile $profile)
     {
         return $profile->deleteOrFail();
     }
 
     public function getProfileById(string $profile_id)
     {
-        return Profile::find($profile_id);
+        try {
+            return Profile::where('profile_id', $profile_id)->first();
+        } catch (ProfileException $e) {
+            throw new ProfileException('No profile found for the provided profile_id');
+        }
     }
 
     public function updateProfile(Profile $profile, array $data)

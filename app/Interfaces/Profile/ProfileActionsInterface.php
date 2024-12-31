@@ -11,7 +11,7 @@ interface ProfileActionsInterface
 
     public function getProfileByUserId(string $user_id);
 
-    public function deleteProfileById(Profile $profile);
+    public function deleteProfile(Profile $profile);
 
     public function getProfileById(string $profile_id);
 

@@ -30,7 +30,13 @@ class ProfileController extends Controller
     public function updateUserProfile(UpdateProfileRequest $request)
     {
         $profileRequest = UpdateProfileDTO::fromUpdateRequest($request->validated());
-        $profile = $this->profile->getProfileById($profileRequest->profile_id);
+        try {
+            $profile = $this->profile->getProfileById($profileRequest->profile_id);
+        } catch (ProfileException $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ]);
+        }
         if (is_null($profile)) {
             return response()->json([
                 'message' => 'The profile_id provided not exists'
@@ -91,11 +97,13 @@ class ProfileController extends Controller
             try {
                 if (!Hash::check($filteredAttributes['password_check'], $user->password)) {
                     return response()->json([
-                        'message' => 'Wrong password provided.'
+                        'message' => 'Wrong password provided'
                     ], 400);
                 }
-            } catch (\Exception $e) {
-                throw new UserException('password_check not provided');
+            } catch (UserException $e) {
+                return response()->json([
+                    'message' => 'password_check not provided'
+                ], 400);
             }
         }
         $this->user->updateUser($user, $filteredAttributes);

@@ -2,17 +2,24 @@
 
 namespace App\Models;
 
+use Database\Factories\PostFactory;
+use Database\Factories\ProfileFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
 class Profile extends Model
 {
-    //
+
     use HasFactory, Notifiable, HasUuids;
+
+    public $incrementing = false;
+
+    protected $table = 'profiles';
 
     protected $primaryKey = 'profile_id';
 
@@ -55,7 +62,6 @@ class Profile extends Model
             'updated_at' => 'datetime',
         ];
     }
-    public $incrementing = false;
 
     protected static function boot()
     {
@@ -65,8 +71,18 @@ class Profile extends Model
         });
     }
 
+    protected static function newFactory(): ProfileFactory
+    {
+        return ProfileFactory::new();
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class, 'post_id', 'post_id');
     }
 }
