@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Like\LikeController;
 use App\Http\Controllers\Post\PostController;
+use App\Http\Controllers\Post\PostImage\PostImageController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\User\UserController;
-use App\Http\Middleware\VerifyApiToken;
 use App\Http\Middleware\VerifyApplicationToken;
 use Illuminate\Support\Facades\Route;
 
@@ -29,5 +30,18 @@ Route::prefix('/posts')->middleware(['api', VerifyApplicationToken::class])->gro
     Route::post('/create', [PostController::class, 'store'])->name('post.create');
     Route::patch('/update', [PostController::class, 'update'])->name('post.update');
     Route::delete('/delete', [PostController::class, 'remove'])->name('post.delete');
+
+    Route::prefix('/images')->middleware(['api', VerifyApplicationToken::class])->group(function () {
+        Route::get('/{id}', [PostImageController::class, 'getPostImageById'])->name('post.image.show');
+        Route::post('/create', [PostImageController::class, 'store'])->name('post.image.create');
+        Route::patch('/update', [PostImageController::class, 'update'])->name('post.image.update');
+        Route::delete('/delete', [PostImageController::class, 'remove'])->name('post.image.delete');
+    })->name('images');
+
 })->name('posts');
 
+Route::prefix('/likes')->middleware(['api', VerifyApplicationToken::class])->group(function () {
+    Route::post('/add', [LikeController::class, 'addLike'])->name('like.add');
+    Route::post('/count', [LikeController::class, 'checkLikesCount'])->name('like.count');
+    Route::delete('/remove', [LikeController::class, 'removeLike'])->name('like.remove');
+})->name('likes');
